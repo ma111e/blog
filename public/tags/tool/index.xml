@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tool on Terminal</title>
+    <link>http://localhost:1313/tags/tool/</link>
+    <description>Recent content in Tool on Terminal</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 15 Feb 2025 18:55:56 +0100</lastBuildDate><atom:link href="http://localhost:1313/tags/tool/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Moonboots 1.0</title>
+      <link>http://localhost:1313/posts/moonboots_release/moonboots_release/</link>
+      <pubDate>Sat, 15 Feb 2025 18:55:56 +0100</pubDate>
+      
+      <guid>http://localhost:1313/posts/moonboots_release/moonboots_release/</guid>
+      <description>&lt;img src=&#34;http://localhost:1313/posts/moonboots_release/images/header.png&#34;  alt=&#34;Moonboots header image showing a screenshot of the tool running with very badly drawn moonboots and a &amp;#39;Moonboots 1.0&amp;#39; text badly drawn over it&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;    /&gt;
+
+
+&lt;h2 id=&#34;tldr&#34;&gt;TL;DR&lt;/h2&gt;
+&lt;p&gt;I&amp;rsquo;m releasing a tool I use while reversing: Moonboots—a shellcode injector with features like encoding–agnostic hex input, automatic cleanup, clipboard sourcing, shellcode idling, managed use support, and a plugin framework to easily implement new techniques.&lt;/p&gt;
+&lt;p&gt;The release is available on &lt;a href=&#34;https://github.com/ma111e/moonboots&#34;&gt;GitHub&lt;/a&gt;, and the full documentation on the &lt;a href=&#34;https://ma111e.github.io/moonboots/#/&#34;&gt;repository&amp;rsquo;s Pages&lt;/a&gt;.&lt;/p&gt;</description>
+      <content>
+&lt;img src=&#34;http://localhost:1313/posts/moonboots_release/images/header.png&#34;  alt=&#34;Moonboots header image showing a screenshot of the tool running with very badly drawn moonboots and a &amp;#39;Moonboots 1.0&amp;#39; text badly drawn over it&#34;  class=&#34;center&#34;  style=&#34;border-radius: 8px;&#34;    /&gt;
+
+
+&lt;h2 id=&#34;tldr&#34;&gt;TL;DR&lt;/h2&gt;
+&lt;p&gt;I&amp;rsquo;m releasing a tool I use while reversing: Moonboots—a shellcode injector with features like encoding–agnostic hex input, automatic cleanup, clipboard sourcing, shellcode idling, managed use support, and a plugin framework to easily implement new techniques.&lt;/p&gt;
+&lt;p&gt;The release is available on &lt;a href=&#34;https://github.com/ma111e/moonboots&#34;&gt;GitHub&lt;/a&gt;, and the full documentation on the &lt;a href=&#34;https://ma111e.github.io/moonboots/#/&#34;&gt;repository&amp;rsquo;s Pages&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Shellcode injection has long been a part of the malware authors&amp;rsquo; cookbooks. Whether used as part of complex loading chains or to evade countermeasures, this technique is likely to remain relevant for a long time.&lt;/p&gt;
+&lt;p&gt;Digging out shellcode during malware analysis is quite common. However, shellcode is often just a sequence of instructions, with no means of being loaded and run by the OS—which can be a problem for standard procedure like dynamic analysis.&lt;/p&gt;
+&lt;p&gt;There are many ways to run and analyze such piece of code independently. Still, I prefer to stay as close as possible to the malware’s actual operational context. I often choose either to patch the malware or to use debugger tricks to get a hold on the shellcode execution—but there have been many instances where a flexible loader that I know well could have saved me a lot of time.&lt;/p&gt;
+&lt;p&gt;Many loaders and injectors are available online, yet I have never found one I felt completely comfortable using. Even worse, some didn’t work as I expected, wasting my time as I reviewed the code to determine whether my hypothesis was wrong or if I had made a mistake while using the tool.&lt;/p&gt;
+&lt;p&gt;Plus, I love to learn malware techniques by implementing them myself. And I love to write tools.&lt;/p&gt;
+&lt;p&gt;This is how I came to build Moonboots, the shellcode injector I&amp;rsquo;m releasing here. I wrote this program a few years ago, when Golang was rapidly gaining popularity among malware authors. I chose to focus on implementing the injection techniques I encountered using pure Go, both to better understand the language’s constraints and to have a lab environment that was easy to use for research.&lt;/p&gt;
+&lt;h2 id=&#34;moonboots1&#34;&gt;Moonboots&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/h2&gt;
+&lt;p&gt;At its core, this program is a shellcode injector: it takes shellcode as input and uses a specific technique to inject it into a target. That&amp;rsquo;s all.&lt;/p&gt;
+&lt;p&gt;However, I built it with two additional requirements in mind:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It must be as easy to use as I can think of&lt;/li&gt;
+&lt;li&gt;It must be extensible in a way that prevents the implementation of novel techniques from becoming a daunting time sink during research&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;input&#34;&gt;Input&lt;/h3&gt;
+&lt;p&gt;One of the first pain points I wanted to address was the inconsistency in shellcode formats across different sources. Converting &lt;code&gt;\xFF&lt;/code&gt; to &lt;code&gt;0xFF&lt;/code&gt; or &lt;code&gt;FF&lt;/code&gt;, normalizing spaces and case, removing quotes and the likes has always felt like such a petty discomfort that I needed to handle it automatically. Nobody should have to waste time on that.&lt;/p&gt;
+&lt;p&gt;As such, Moonboots will guess the input format automatically&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;, whether it&amp;rsquo;s hex or raw bytes. It&amp;rsquo;s also able to clean the input a bit, so you can actually copy/paste shellcode right from the output of a &lt;code&gt;xxd -p&lt;/code&gt; command or from a C source code and feed it to it without any remorse.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-c&#34; data-lang=&#34;c&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; shellcode[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x31\xc0\x31\xdb\x31\xc9\x31\xd2&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x51\x68\x6c\x6c\x20\x20\x68\x33&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x32\x2e\x64\x68\x75\x73\x65\x72&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x89\xe1\xbb\x7b\x1d\x80\x7c\x51&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 0x7c801d7b ; LoadLibraryA(user32.dll)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\xff\xd3\xb9\x5e\x67\x30\xef\x81&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\xc1\x11\x11\x11\x11\x51\x68\x61&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x67\x65\x42\x68\x4d\x65\x73\x73&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x89\xe1\x51\x50\xbb\x40\xae\x80&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 0x7c80ae40 ; GetProcAddress(user32.dll, MessageBoxA)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x7c\xff\xd3\x89\xe1\x31\xd2\x52&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\x51\x51\x52\xff\xd0\x31\xc0\x50&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\xb8\x12\xcb\x81\x7c\xff\xd0&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;;    &lt;span style=&#34;color:#75715e&#34;&gt;// 0x7c81cb12 ; ExitProcess(0)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;Yes, you can use this as input without any trouble&lt;/em&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;I also added a flag to fetch the input from the clipboard because I&amp;rsquo;m lazy. And it&amp;rsquo;s kinda cool. But also a bit tricky. Is the shellcode that&amp;rsquo;ll run the one that I copied or the one before ? Let&amp;rsquo;s find out ⌐■_■. Maybe use this one with caution. Finding the right shellcode variation is so much easier tho. ¯\_(ツ)_/¯&lt;/p&gt;
+&lt;p&gt;Note that a &lt;code&gt;--demo&lt;/code&gt; flag is available for testing and will inject a hardcoded &lt;code&gt;calc.exe&lt;/code&gt; shellcode in its own memory. The actual shellcode is shown in the program&amp;rsquo;s help. Additionally, the &lt;code&gt;moonboots/demo/{arch}&lt;/code&gt; folder contains examples of the supported file formats.&lt;/p&gt;
+&lt;p&gt;Some say that base64 is also supported, although it needs to be explicitly specified via the CLI.&lt;/p&gt;
+&lt;p&gt;All the details about the detection and cleanup are available in the &lt;a href=&#34;https://ma111e.github.io/moonboots/#/user_guide/quickstart&#34;&gt;Quickstart&lt;/a&gt; section of the documentation.&lt;/p&gt;
+&lt;h3 id=&#34;privileges&#34;&gt;Privileges&lt;/h3&gt;
+&lt;p&gt;Some shellcode techniques have strict requirements, such as being executed from a high-integrity process or with specific privileges. Moonboots can enable any required privileges and restart itself with high integrity if necessary. Note that self-enabling privileges will always trigger an auto-elevation.&lt;/p&gt;
+&lt;h3 id=&#34;managed-use&#34;&gt;Managed use&lt;/h3&gt;
+&lt;p&gt;Shellcode injection is just one step in malware analysis. Most of the time, we use multiple tools to examine different aspects of the malware, often managed by an orchestration program that bridges tools together and passes data between them.&lt;/p&gt;
+&lt;p&gt;For such cases, Moonboots can function as a custom shellcode loader by using a special flag that specifies the name of a named pipe. The process running the shellcode will then be sent back upon creation.&lt;/p&gt;
+&lt;p&gt;See the &lt;a href=&#34;https://ma111e.github.io/moonboots/#/developers/managed_use&#34;&gt;Managed Use&lt;/a&gt; section of the documentation for full details and boilerplate code.&lt;/p&gt;
+&lt;h3 id=&#34;quality-of-life&#34;&gt;Quality of life&lt;/h3&gt;
+&lt;p&gt;For those who might not be aware, &lt;code&gt;EB FE&lt;/code&gt; is love, &lt;code&gt;EB FE&lt;/code&gt; is life. This instruction means &amp;ldquo;(EB) jump to the relative offset (FE) -1&amp;rdquo;—&lt;em&gt;aka&lt;/em&gt; an infinite loop.&lt;/p&gt;
+&lt;p&gt;Any Windows process running these two bytes will not advance to any further instruction, effectively halting the execution of the program without using any debugger feature. This is typically used to give us the time to attach a debugger after anti-debugging checks have passed.&lt;/p&gt;
+&lt;p&gt;Regarding shellcode injection however, it has another valuable use: pausing execution immediately after injection. This is particularly useful when injecting shellcode into a remote process or through complex methods that are difficult to track with a debugger.&lt;/p&gt;
+&lt;p&gt;To this end, Moonboots includes a flag that will prepend these 2 bytes to the shellcode before injecting it.&lt;/p&gt;
+&lt;p&gt;See the &lt;a href=&#34;https://ma111e.github.io/moonboots/#/developers/managed_use&#34;&gt;Idle&lt;/a&gt; section of the documentation for more details.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The tool is available on &lt;a href=&#34;https://github.com/ma111e/moonboots&#34;&gt;GitHub&lt;/a&gt;, and the full documentation on the &lt;a href=&#34;https://ma111e.github.io/moonboots/#/&#34;&gt;repository&amp;rsquo;s Pages&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Issues and pull requests are welcomed.&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34;&gt;
+&lt;p&gt;Why &amp;ldquo;Moonboots&amp;rdquo; ? Because there had to be a name—and I love moonboots. Malware would 100% look cooler in moonboots.&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&#34;fn:2&#34;&gt;
+&lt;p&gt;Note that custom shellcode crafted through deep madness (e.g. &lt;a href=&#34;https://www.usenix.org/system/files/woot20-paper-patel_0.pdf&#34;&gt;https://www.usenix.org/system/files/woot20-paper-patel_0.pdf&lt;/a&gt;) might defeat the auto-detection feature. In this case, the encoding should be manually specified via the CLI.&amp;#160;&lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>
