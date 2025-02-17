@@ -88,7 +88,7 @@ pagination.pagerSize = 5
 
       [languages.en.params.logo]
         logoText = "ma111e"
-        logoHomeLink = "/"
+        logoHomeLink = "/blog"
 
 #      [languages.en.menu]
 #        [[languages.en.menu.main]]
