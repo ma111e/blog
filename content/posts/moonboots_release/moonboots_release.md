@@ -12,7 +12,7 @@ readingTime = true
 hideComments = false
 +++
 
-{{< image src="/posts/moonboots_release/images/header.png" alt="Moonboots header image showing a screenshot of the tool running with very badly drawn moonboots and a 'Moonboots 1.0' text badly drawn over it" position="center" style="border-radius: 8px;" >}}
+{{< image src="images/header.png" alt="Moonboots header image showing a screenshot of the tool running with very badly drawn moonboots and a 'Moonboots 1.0' text badly drawn over it" position="center" style="border-radius: 8px;" >}}
 
 ## TL;DR
 I'm releasing a tool I use while reversing: Moonboots—a shellcode injector with features like encoding–agnostic hex input, automatic cleanup, clipboard sourcing, shellcode idling, managed use support, and a plugin framework to easily implement new techniques.
