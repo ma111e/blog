@@ -2,57 +2,57 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Terminal</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>https://ma111e.github.io/tags/</link>
     <description>Recent content in Tags on Terminal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 15 Feb 2025 18:55:56 +0100</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 15 Feb 2025 18:55:56 +0100</lastBuildDate><atom:link href="https://ma111e.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Injection</title>
-      <link>http://localhost:1313/tags/injection/</link>
+      <link>https://ma111e.github.io/tags/injection/</link>
       <pubDate>Sat, 15 Feb 2025 18:55:56 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/injection/</guid>
+      <guid>https://ma111e.github.io/tags/injection/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Moonboots</title>
-      <link>http://localhost:1313/tags/moonboots/</link>
+      <link>https://ma111e.github.io/tags/moonboots/</link>
       <pubDate>Sat, 15 Feb 2025 18:55:56 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/moonboots/</guid>
+      <guid>https://ma111e.github.io/tags/moonboots/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Release</title>
-      <link>http://localhost:1313/tags/release/</link>
+      <link>https://ma111e.github.io/tags/release/</link>
       <pubDate>Sat, 15 Feb 2025 18:55:56 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/release/</guid>
+      <guid>https://ma111e.github.io/tags/release/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Shellcode</title>
-      <link>http://localhost:1313/tags/shellcode/</link>
+      <link>https://ma111e.github.io/tags/shellcode/</link>
       <pubDate>Sat, 15 Feb 2025 18:55:56 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/shellcode/</guid>
+      <guid>https://ma111e.github.io/tags/shellcode/</guid>
       <description></description>
       <content></content>
     </item>
     
     <item>
       <title>Tool</title>
-      <link>http://localhost:1313/tags/tool/</link>
+      <link>https://ma111e.github.io/tags/tool/</link>
       <pubDate>Sat, 15 Feb 2025 18:55:56 +0100</pubDate>
       
-      <guid>http://localhost:1313/tags/tool/</guid>
+      <guid>https://ma111e.github.io/tags/tool/</guid>
       <description></description>
       <content></content>
     </item>
