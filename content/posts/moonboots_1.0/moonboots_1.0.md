@@ -13,7 +13,7 @@ hideComments = false
 +++
 
 
-{{< figure src="/blog/posts/moonboots_1.0/images/header.png" caption="aaaaaa" alt="Moonboots header image showing a screenshot of the tool running with very badly drawn moonboots and a 'Moonboots 1.0' text badly drawn over it" position="center" captionStyle="font-style: italic;" >}}
+{{< figure src="/blog/posts/moonboots_1.0/images/header.png" caption="" alt="Moonboots header image showing a screenshot of the tool running with very badly drawn moonboots and a 'Moonboots 1.0' text badly drawn over it" position="center" captionStyle="font-style: italic;" >}}
 
 ## TL;DR
 
